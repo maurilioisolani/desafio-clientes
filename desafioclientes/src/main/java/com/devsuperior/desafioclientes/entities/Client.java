@@ -1,6 +1,8 @@
 package com.devsuperior.desafioclientes.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDate;
 
@@ -12,9 +14,11 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Campo não pode ser nulo")
     private String name;
     private String cpf;
     private Double income;
+    @PastOrPresent(message = "Não pode ser uma data futura")
     private LocalDate birthDate;
     private Integer children;
 
