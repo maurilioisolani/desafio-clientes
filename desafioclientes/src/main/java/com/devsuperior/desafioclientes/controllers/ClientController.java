@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/clients")
@@ -29,17 +32,22 @@ public class ClientController {
     }
 
     @PostMapping
-    public ClientDTO insert(@Valid @RequestBody ClientDTO clientDTO) {
-        return clientService.insert(clientDTO);
+    public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO clientDTO) {
+        ClientDTO dto = clientService.insert(clientDTO);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping(value = "{id}")
-    public ClientDTO modify(@PathVariable Long id, @Valid @RequestBody ClientDTO clientDTO) {
-        return clientService.modify(id, clientDTO);
+    public ResponseEntity<ClientDTO> modify(@PathVariable Long id, @Valid @RequestBody ClientDTO clientDTO) {
+        ClientDTO dto = clientService.modify(id, clientDTO);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         clientService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
